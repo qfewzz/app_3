@@ -33,7 +33,6 @@ public class PrivatePageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_private_page);
-
         int personID = getIntent().getIntExtra(Person.KEY_ID, -1);
 
         recyclerView = findViewById(R.id.recycler_view_bedehies);

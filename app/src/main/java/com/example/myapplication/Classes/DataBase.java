@@ -107,6 +107,8 @@ public class DataBase extends SQLiteOpenHelper {
         person.setId(person_cursor.getInt(person_cursor.getColumnIndex(Person.KEY_ID)));
         person.setFirstName(person_cursor.getString(person_cursor.getColumnIndex(Person.KEY_FIRST_NAME)));
         person.setLastName(person_cursor.getString(person_cursor.getColumnIndex(Person.KEY_LAST_NAME)));
+        person.setUserName(person_cursor.getString(person_cursor.getColumnIndex(Person.KEY_USERNAME)));
+        person.setPassword(person_cursor.getString(person_cursor.getColumnIndex(Person.KEY_PASSWORD)));
         return person;
     }
 
