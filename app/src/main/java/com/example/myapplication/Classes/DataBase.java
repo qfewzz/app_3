@@ -10,11 +10,14 @@ import android.widget.Switch;
 
 import androidx.annotation.Nullable;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 public class DataBase extends SQLiteOpenHelper {
 
     private SQLiteDatabase sqdb;
+    private Context context;
 
     public static final String
             db_name = "group",
@@ -24,6 +27,7 @@ public class DataBase extends SQLiteOpenHelper {
 
     public DataBase(@Nullable Context context) {
         super(context, db_name, null, 1);
+        this.context = context;
     }
 
     @Override
@@ -143,7 +147,7 @@ public class DataBase extends SQLiteOpenHelper {
     public ArrayList<Person> getPeople(String where, String sortBy) {
         openSqLiteDatabase();
         Cursor person_cursor = sqdb.query(TABLE_PERSONS, null,
-                where, null, null, null, sortBy);
+                where, null, null, null, Person.KEY_ID);
 
         ArrayList<Person> people = new ArrayList<>(person_cursor.getCount() + 1);
         if (person_cursor.moveToFirst()) {
@@ -248,6 +252,11 @@ public class DataBase extends SQLiteOpenHelper {
         }
         return true;
     }
+
+    /*public void exportDB() {
+        FileOutputStream fos = new FileOutputStream(context.getFilesDir());
+        FileInputStream fos = new FileInputStream(context.getExternalFilesDir());
+    }*/
 
     public void dropAllTables() {
         openSqLiteDatabase();

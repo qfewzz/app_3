@@ -24,8 +24,10 @@ import java.util.ArrayList;
 
 public class PrivatePageActivity extends AppCompatActivity {
 
+
     RecyclerView recyclerView;
     BedehiListAdapter adapter;
+    TextView tv_logined_user;
     Button btn_back_to_main, btn_back_to_login;
     View.OnClickListener listener;
 
@@ -34,6 +36,9 @@ public class PrivatePageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_private_page);
         int personID = getIntent().getIntExtra(Person.KEY_ID, -1);
+
+        tv_logined_user = findViewById(R.id.tv_logined_user);
+        tv_logined_user.setText(new DataBase(this).idToPerson(personID).toString());
 
         recyclerView = findViewById(R.id.recycler_view_bedehies);
         btn_back_to_login = findViewById(R.id.btn_back_to_login);
@@ -62,13 +67,13 @@ public class PrivatePageActivity extends AppCompatActivity {
 
     class BedehiListAdapter extends RecyclerView.Adapter<BedehiListAdapter.MyViewHolder> {
 
-        public ArrayList<Person> people;
-        public ArrayList<Integer> bedehiAmount;
-        public ArrayList<Bedehi> allBedehis;
-        public ArrayList<Integer>[] peoplePurchasesID;
-        public View.OnClickListener listener;
-        public DataBase dataBase;
-        public int fromID;
+        ArrayList<Person> people;
+        ArrayList<Integer> bedehiAmount;
+        ArrayList<Bedehi> allBedehis;
+        ArrayList<Integer>[] peoplePurchasesID;
+        View.OnClickListener listener;
+        DataBase dataBase;
+        int fromID;
 
         public BedehiListAdapter(Context context, int fromID) {
             this.fromID = fromID;

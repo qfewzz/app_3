@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,7 +29,6 @@ import com.example.myapplication.R;
 
 import java.util.ArrayList;
 
-
 public class MainActivity extends AppCompatActivity {
 
     TextView tv_no_purchase;
@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 /*
             Window window = getWindow();
             window.getDecorView().setSystemUiVisibility(
@@ -167,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
             holder.users_list_layout.addView(tv);
 
             tv = new TextView(context);
-            tv.setText(String.format("purchaser : %s %s", purchase.getWho().getFirstName(), purchase.getWho().getLastName()));
+            tv.setText(String.format("خریدار : %s %s", purchase.getWho().getFirstName(), purchase.getWho().getLastName()));
             holder.users_list_layout.addView(tv);
         }
 
