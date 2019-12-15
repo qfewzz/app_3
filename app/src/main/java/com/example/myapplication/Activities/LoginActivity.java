@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,13 +45,15 @@ public class LoginActivity extends AppCompatActivity {
                 if (v == btn_submit) {
                     String userName = et_user_name.getText().toString();
                     String password = et_password.getText().toString();
-                    ArrayList<Person> people = dataBase.getPeople(Person.KEY_USERNAME + "='" + userName + "' AND " + Person.KEY_PASSWORD + "='" + password+"'", "");
+                    ArrayList<Person> people = dataBase.getPeople(Person.KEY_USERNAME + "='" + userName + "' AND " + Person.KEY_PASSWORD + "='" + password + "'", "");
                     if (people.size() == 1) {
                         Intent intent = new Intent(LoginActivity.this, PrivatePageActivity.class);
                         intent.putExtra(Person.KEY_ID, people.get(0).getId());
                         startActivity(intent);
-                    } else if(people.size() == 0) {
+                    } else if (people.size() == 0) {
                         tv_wrong_user_pass.setText("نام کاربری یا رمز اشتباه است");
+                    } else {
+                        tv_wrong_user_pass.setText("خطای ناشناخته");
                     }
                 } else if (v == btn_cancel) {
                     finish();
@@ -64,7 +67,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -76,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        if(A.finish_login_activity) {
+        if (A.finish_login_activity) {
             A.finish_login_activity = false;
             finish();
         }
