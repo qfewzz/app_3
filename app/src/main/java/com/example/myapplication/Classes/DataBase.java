@@ -10,6 +10,8 @@ import android.widget.Switch;
 
 import androidx.annotation.Nullable;
 
+import com.example.myapplication.A;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ public class DataBase extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         createTables(db);
     }
+
 
     public SQLiteDatabase openSqLiteDatabase() {
         return sqdb = getWritableDatabase();
@@ -76,57 +79,14 @@ public class DataBase extends SQLiteOpenHelper {
                 ")");
     }
 
-    public Person idToPerson(int person_id) {
-        openSqLiteDatabase();
-        Cursor person_cursor = sqdb.query(DataBase.TABLE_PERSONS, null,
-                Person.KEY_ID + "=" + person_id, null, null, null, null);
-        person_cursor.moveToFirst();
-        return cursorToPerson(person_cursor);
-    }
 
+    //purchase start
     public Purchase idToPurchase(int purchase_id) {
         openSqLiteDatabase();
         Cursor cursor = sqdb.query(TABLE_PURCHASES, null,
                 Purchase.KEY_ID + "=" + purchase_id, null, null, null, null);
         cursor.moveToFirst();
         return cursorToPurchase(cursor);
-    }
-
-    public ArrayList<Person> getUsers(int purchaseID) {
-        openSqLiteDatabase();
-        ArrayList<Bedehi> bedehis = getBedehiesAsList(Bedehi.KEY_PURCHASE + "=" + purchaseID);
-        ArrayList<Person> users = new ArrayList<>();
-        for (int i = 0; i < bedehis.size(); i++) {
-            users.add(idToPerson(bedehis.get(i).getFrom().getId()));
-        }
-        return users;
-    }
-
-
-    public Person cursorToPerson(Cursor person_cursor) {
-        Person person = new Person();
-        if (person_cursor == null || person_cursor.getCount() == 0) {
-            return person;
-        }
-        person.setId(person_cursor.getInt(person_cursor.getColumnIndex(Person.KEY_ID)));
-        person.setFirstName(person_cursor.getString(person_cursor.getColumnIndex(Person.KEY_FIRST_NAME)));
-        person.setLastName(person_cursor.getString(person_cursor.getColumnIndex(Person.KEY_LAST_NAME)));
-        person.setUserName(person_cursor.getString(person_cursor.getColumnIndex(Person.KEY_USERNAME)));
-        person.setPassword(person_cursor.getString(person_cursor.getColumnIndex(Person.KEY_PASSWORD)));
-        return person;
-    }
-
-    public Bedehi cursorToBedehi(Cursor bedehi_cursor) {
-        Bedehi bedehi = new Bedehi();
-        if (bedehi_cursor == null || bedehi_cursor.getCount() == 0) {
-            return bedehi;
-        }
-        bedehi.setId(bedehi_cursor.getInt(bedehi_cursor.getColumnIndex(Bedehi.KEY_ID)));
-        bedehi.setAmount(bedehi_cursor.getInt(bedehi_cursor.getColumnIndex(Bedehi.KEY_AMOUNT)));
-        bedehi.setFrom(idToPerson(bedehi_cursor.getInt(bedehi_cursor.getColumnIndex(Bedehi.KEY_FROM))));
-        bedehi.setTo(idToPerson(bedehi_cursor.getInt(bedehi_cursor.getColumnIndex(Bedehi.KEY_TO))));
-        bedehi.setPurchase(idToPurchase(bedehi_cursor.getInt(bedehi_cursor.getColumnIndex(Bedehi.KEY_PURCHASE))));
-        return bedehi;
     }
 
     public Purchase cursorToPurchase(Cursor purchase_cursor) {
@@ -144,22 +104,6 @@ public class DataBase extends SQLiteOpenHelper {
         return purchase;
     }
 
-    public ArrayList<Person> getPeople(String where, String sortBy) {
-        openSqLiteDatabase();
-        Cursor person_cursor = sqdb.query(TABLE_PERSONS, null,
-                where, null, null, null, Person.KEY_ID);
-
-        ArrayList<Person> people = new ArrayList<>(person_cursor.getCount() + 1);
-        if (person_cursor.moveToFirst()) {
-            do {
-                people.add(cursorToPerson(person_cursor));
-            } while (person_cursor.moveToNext());
-        }
-
-        person_cursor.close();
-        return people;
-    }
-
     public ArrayList<Purchase> getPurchases(String where, String sortBy) {
         openSqLiteDatabase();
         ArrayList<Purchase> purchases = new ArrayList<>();
@@ -174,6 +118,19 @@ public class DataBase extends SQLiteOpenHelper {
 
         purchase_cursor.close();
         return purchases;
+    }
+
+    public Bedehi cursorToBedehi(Cursor bedehi_cursor) {
+        Bedehi bedehi = new Bedehi();
+        if (bedehi_cursor == null || bedehi_cursor.getCount() == 0) {
+            return bedehi;
+        }
+        bedehi.setId(bedehi_cursor.getInt(bedehi_cursor.getColumnIndex(Bedehi.KEY_ID)));
+        bedehi.setAmount(bedehi_cursor.getInt(bedehi_cursor.getColumnIndex(Bedehi.KEY_AMOUNT)));
+        bedehi.setFrom(idToPerson(bedehi_cursor.getInt(bedehi_cursor.getColumnIndex(Bedehi.KEY_FROM))));
+        bedehi.setTo(idToPerson(bedehi_cursor.getInt(bedehi_cursor.getColumnIndex(Bedehi.KEY_TO))));
+        bedehi.setPurchase(idToPurchase(bedehi_cursor.getInt(bedehi_cursor.getColumnIndex(Bedehi.KEY_PURCHASE))));
+        return bedehi;
     }
 
     public Cursor getBedehiesAsCursor(String where) {
@@ -194,31 +151,11 @@ public class DataBase extends SQLiteOpenHelper {
 
         return bedehis;
     }
-/*
-    public void getRelatedPurchases(int PersonID_1, int PersonID_2) {
-        openSqLiteDatabase();
+    //purchase end
 
-    }
+    // person start
 
-    public int getPeopleCount(String where) {
-        openSqLiteDatabase();
-        Cursor cursor = sqdb.query(DataBase.TABLE_PERSONS, null,
-                where, null, null, null, null);
-        int count = cursor.getCount();
-        cursor.close();
-        return count;
-    }
-*/
-
-    public void addPerson(ContentValues person) {
-        openSqLiteDatabase();
-        sqdb.insert(TABLE_PERSONS, null, person);
-    }
-
-    public int removePerson(int person_id) {
-        openSqLiteDatabase();
-        return sqdb.delete(TABLE_PERSONS, Person.KEY_ID + "=" + person_id, null);
-    }
+    //person end
 
     public boolean addPurchaseAndBedehies(ContentValues purchase, LinearLayout switches, Context context) {
         int checkedSwitches = 0;
@@ -252,11 +189,6 @@ public class DataBase extends SQLiteOpenHelper {
         }
         return true;
     }
-
-    /*public void exportDB() {
-        FileOutputStream fos = new FileOutputStream(context.getFilesDir());
-        FileInputStream fos = new FileInputStream(context.getExternalFilesDir());
-    }*/
 
     public void dropAllTables() {
         openSqLiteDatabase();
